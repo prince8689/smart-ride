@@ -1,0 +1,57 @@
+name: Smart Ride Backend CI
+
+on:
+  push:
+    branches: [main]
+    paths: ['smart-ride-backend/**']
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_DB: smartride_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports: ['5432:5432']
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install dependencies
+        run: cd smart-ride-backend && npm ci
+      
+      - name: Run schema
+        run: cd smart-ride-backend && psql $DATABASE_URL -f src/config/schema.sql
+        env:
+          DATABASE_URL: postgresql://testuser:testpass@localhost:5432/smartride_test
+      
+      - name: Run health check
+        run: cd smart-ride-backend && node -e "require('./src/config/db')"
+        env:
+          DATABASE_URL: postgresql://testuser:testpass@localhost:5432/smartride_test
+          PORT: 5000
+          JWT_SECRET: test_secret
+          FRONTEND_URL: http://localhost:3000
+          RAZORPAY_KEY_ID: test
+          RAZORPAY_KEY_SECRET: test
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Deploy to Railway
+        run: echo "Railway auto-deploys from GitHub — no manual step needed"

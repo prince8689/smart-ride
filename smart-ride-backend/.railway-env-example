@@ -1,0 +1,31 @@
+DATABASE_URL=         # Railway PostgreSQL plugin auto-provides this
+
+PORT=                 # Railway auto-sets this, don't override
+
+NODE_ENV=production
+
+JWT_SECRET=           # Generate: node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+
+JWT_EXPIRES_IN=7d
+
+RAZORPAY_KEY_ID=      # From Razorpay dashboard
+
+RAZORPAY_KEY_SECRET=  # From Razorpay dashboard
+
+RAZORPAY_WEBHOOK_SECRET= # From Razorpay webhook settings
+
+EMAIL_USER=           # Gmail address
+
+EMAIL_PASS=           # Gmail App Password (not regular password)
+
+FRONTEND_URL=         # Your Vercel frontend URL: https://smart-ride.vercel.app
+
+MAP_PROVIDER=google   # or mappls
+
+GOOGLE_MAPS_API_KEY=  # From Google Cloud Console
+
+MAPPLS_API_KEY=       # From Mappls dashboard (if using mappls)
+
+MAPPLS_CLIENT_ID=     # From Mappls dashboard (if using mappls)
+
+MAPPLS_CLIENT_SECRET= # From Mappls dashboard (if using mappls)

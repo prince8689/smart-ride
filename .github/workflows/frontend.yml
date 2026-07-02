@@ -1,0 +1,33 @@
+name: Smart Ride Frontend CI
+
+on:
+  push:
+    branches: [main]
+    paths: ['smart-ride-frontend/**']
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install
+        run: cd smart-ride-frontend && npm ci
+      
+      - name: Run unit tests
+        run: cd smart-ride-frontend && npm test -- --watchAll=false --coverage
+      
+      - name: Build
+        run: cd smart-ride-frontend && npm run build
+        env:
+          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+          REACT_APP_SOCKET_URL: ${{ secrets.REACT_APP_SOCKET_URL }}
+          REACT_APP_MAP_PROVIDER: google
+          REACT_APP_GOOGLE_MAPS_KEY: ${{ secrets.REACT_APP_GOOGLE_MAPS_KEY }}
+          REACT_APP_RAZORPAY_KEY_ID: ${{ secrets.REACT_APP_RAZORPAY_KEY_ID }}
+      
+      - name: Deploy note
+        run: echo "Vercel auto-deploys from GitHub push — check Vercel dashboard"
