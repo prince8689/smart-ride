@@ -1,0 +1,29 @@
+{
+  "short_name": "SmartRide",
+  "name": "Smart Ride - Monthly Pickup & Drop",
+  "description": "Premium Monthly Pickup & Drop Subscription Service",
+  "icons": [
+    { "src": "/logo.svg", "sizes": "72x72 96x96 128x128 144x144 152x152 192x192 384x384 512x512", "type": "image/svg+xml", "purpose": "any maskable" }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#2563EB",
+  "background_color": "#0F172A",
+  "orientation": "portrait",
+  "shortcuts": [
+    {
+      "name": "Book Subscription",
+      "short_name": "Book",
+      "description": "Book a new ride subscription",
+      "url": "/dashboard/book",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "My Subscriptions",
+      "short_name": "Subscriptions",
+      "description": "View active subscriptions",
+      "url": "/dashboard/subscriptions",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}
