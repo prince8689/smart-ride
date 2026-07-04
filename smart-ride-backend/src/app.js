@@ -27,6 +27,9 @@ const usersRoutes = require('./modules/users/users.routes');
 
 const app = express();
 
+// Trust Render's load balancer proxy
+app.set('trust proxy', 1);
+
 // Apply middleware
 app.use(helmetConfig);
 app.use(corsConfig);
