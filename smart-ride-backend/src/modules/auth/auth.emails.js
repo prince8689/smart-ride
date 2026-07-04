@@ -9,7 +9,10 @@ const transporter = nodemailer.createTransport({
   auth: {
     user: env.EMAIL_USER,
     pass: env.EMAIL_PASS
-  }
+  },
+  connectionTimeout: 5000,
+  greetingTimeout: 5000,
+  socketTimeout: 5000
 });
 
 const sendEmail = async (to, subject, html) => {
@@ -63,6 +66,7 @@ const sendEmailOTP = async (email, full_name, otp) => {
     <div class="otp-box">${otp}</div>
     <p>If you didn't request this, ignore this email.</p>
   `;
+  console.log(`[EMAIL SIMULATION] OTP ${otp} generated for ${email}`);
   await sendEmail(email, 'Smart Ride — Verify Your Email', getBaseTemplate('Verify Your Email', content));
 };
 
