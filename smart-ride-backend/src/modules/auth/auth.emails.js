@@ -5,7 +5,9 @@ const logger = require('../../utils/logger');
 // Let's create a reusable transporter
 // The PRD doesn't mention transport details, but usually we'd use environment variables
 const transporter = nodemailer.createTransport({
-  service: 'gmail', // Assuming gmail for simplicity, PRD says "Gmail needs App Password"
+  host: env.EMAIL_HOST || 'smtp-relay.brevo.com',
+  port: env.EMAIL_PORT || 587,
+  secure: false, // true for 465, false for other ports
   auth: {
     user: env.EMAIL_USER,
     pass: env.EMAIL_PASS
