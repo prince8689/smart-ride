@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 import { User, Mail, Lock, Phone, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from '../../utils/toastConfig';
@@ -15,7 +16,7 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [termsModal, setTermsModal] = useState({ isOpen: false, type: 'terms' });
-  const { registerUser } = useAuth();
+  const { registerUser, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
   
   const { register, handleSubmit, watch, formState: { errors }, setError, setValue } = useForm();
@@ -48,6 +49,25 @@ const Register = () => {
     } catch (err) {
       setError('root', { message: err.message || 'Registration failed' });
       toast.error(err.message || 'Registration failed');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onGoogleSuccess = async (credentialResponse) => {
+    setIsLoading(true);
+    try {
+      // Pass the selected role ('user' or 'driver') so backend can create proper account if new
+      const res = await loginWithGoogle(credentialResponse.credential, role);
+      if (res.success) {
+        toast.success('Google login successful!');
+        const from = (res.role === 'user' ? '/dashboard' : 
+                      res.role === 'driver' ? '/driver' : '/admin');
+        navigate(from, { replace: true });
+      }
+    } catch (err) {
+      setError('root', { message: err.message || 'Google Login failed' });
+      toast.error(err.message || 'Google Login failed');
     } finally {
       setIsLoading(false);
     }
@@ -228,6 +248,25 @@ const Register = () => {
                 Create Account
               </Button>
             </form>
+
+            <div className="mt-8 relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-navy-200"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-4 bg-white text-navy-500">OR</span>
+              </div>
+            </div>
+
+            <div className="mt-6 flex justify-center">
+              <GoogleLogin
+                onSuccess={onGoogleSuccess}
+                onError={() => {
+                  toast.error('Google Login Failed');
+                }}
+                useOneTap
+              />
+            </div>
 
             <p className="mt-8 text-center text-navy-600">
               Already have an account?{' '}

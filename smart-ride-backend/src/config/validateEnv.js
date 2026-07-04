@@ -35,6 +35,10 @@ const validateEnv = () => {
     logger.warn('Using test keys in production (Razorpay)');
   }
 
+  if (!env.GOOGLE_CLIENT_ID) {
+    logger.warn('GOOGLE_CLIENT_ID is missing. Google Login will not work.');
+  }
+
   logger.info('Environment validated. Map: Google Maps | Email: configured | Cloudinary: configured');
 };
 

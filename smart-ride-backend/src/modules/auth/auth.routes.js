@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const authController = require('./auth.controller');
+const authGoogle = require('./auth.google');
 const { verifyToken } = require('../../middleware/auth');
 const { 
   registerValidator, 
@@ -23,6 +24,7 @@ router.post('/login', loginValidator, authController.login);
 router.post('/refresh', authController.refreshToken);
 router.post('/forgot-password', forgotPasswordValidator, authController.forgotPassword);
 router.post('/reset-password', resetPasswordValidator, authController.resetPassword);
+router.post('/google', authGoogle.googleLogin);
 
 // Protected
 router.post('/logout', verifyToken, authController.logout);

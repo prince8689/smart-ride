@@ -84,6 +84,7 @@ const verifyEmailOTP = async (email, otp) => {
     if (user.email_otp !== otp) throw new Error('INVALID_OTP');
     if (new Date(user.otp_expires_at) < new Date()) throw new Error('OTP_EXPIRED');
 
+    logger.info(`OTP Verified successfully for user: ${email}`);
     await query('UPDATE users SET is_email_verified = true, is_active = true, email_otp = NULL WHERE id = $1', [user.id]);
     await emails.sendWelcomeEmail(email, user.full_name);
 

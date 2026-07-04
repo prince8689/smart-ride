@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 import { Mail, Lock, Eye, EyeOff, CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from '../../utils/toastConfig';
@@ -12,7 +13,7 @@ import PageWrapper from '../../components/layout/PageWrapper';
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { loginUser } = useAuth();
+  const { loginUser, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -32,6 +33,26 @@ const Login = () => {
     } catch (err) {
       setError('root', { message: err.message || 'Invalid credentials' });
       toast.error(err.message || 'Login failed');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onGoogleSuccess = async (credentialResponse) => {
+    setIsLoading(true);
+    try {
+      // For login, we don't strictly need a role, but we can pass 'user' as fallback
+      const res = await loginWithGoogle(credentialResponse.credential, 'user');
+      if (res.success) {
+        toast.success('Google login successful!');
+        const from = location.state?.from?.pathname || 
+          (res.role === 'user' ? '/dashboard' : 
+           res.role === 'driver' ? '/driver' : '/admin');
+        navigate(from, { replace: true });
+      }
+    } catch (err) {
+      setError('root', { message: err.message || 'Google Login failed' });
+      toast.error(err.message || 'Google Login failed');
     } finally {
       setIsLoading(false);
     }
@@ -152,6 +173,16 @@ const Login = () => {
               <div className="relative flex justify-center text-sm">
                 <span className="px-4 bg-white text-navy-500">OR</span>
               </div>
+            </div>
+
+            <div className="mt-6 flex justify-center">
+              <GoogleLogin
+                onSuccess={onGoogleSuccess}
+                onError={() => {
+                  toast.error('Google Login Failed');
+                }}
+                useOneTap
+              />
             </div>
 
             <p className="mt-8 text-center text-navy-600">

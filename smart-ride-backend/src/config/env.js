@@ -12,7 +12,8 @@ const requiredEnvs = [
   'CLOUDINARY_CLOUD_NAME',
   'CLOUDINARY_API_KEY',
   'CLOUDINARY_API_SECRET',
-  'FRONTEND_URL'
+  'FRONTEND_URL',
+  'GOOGLE_CLIENT_ID'
 ];
 
 // We don't throw error here immediately because validateEnv.js does it on startup.
@@ -47,5 +48,6 @@ module.exports = {
   CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
   FRONTEND_URL: process.env.FRONTEND_URL,
-  PLATFORM_COMMISSION_DEFAULT: process.env.PLATFORM_COMMISSION_DEFAULT || 15
+  PLATFORM_COMMISSION_DEFAULT: process.env.PLATFORM_COMMISSION_DEFAULT || 15,
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID
 };

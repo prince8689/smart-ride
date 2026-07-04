@@ -1,6 +1,6 @@
 import React, { createContext, useReducer, useEffect, useCallback } from 'react';
 import { getMe } from '../api/auth.api';
-import { login, logout, register, verifyOTP, resendOTP } from '../api/auth.api';
+import { login, logout, register, verifyOTP, resendOTP, googleLogin } from '../api/auth.api';
 import toast from '../utils/toastConfig';
 
 export const AuthContext = createContext(null);
@@ -81,6 +81,19 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
+  const loginWithGoogle = useCallback(async (credential, role) => {
+    try {
+      const response = await googleLogin({ credential, role });
+      const { access_token: token, user } = response.data;
+      localStorage.setItem('sr_token', token);
+      localStorage.setItem('sr_user', JSON.stringify(user));
+      dispatch({ type: 'LOGIN', payload: { user, token } });
+      return { success: true, role: user.role };
+    } catch (error) {
+      throw error;
+    }
+  }, []);
+
   const registerUser = useCallback(async (data) => {
     try {
       const response = await register(data);
@@ -119,6 +132,7 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider value={{
       ...state,
       loginUser,
+      loginWithGoogle,
       registerUser,
       verifyOTPUser,
       logoutUser,
